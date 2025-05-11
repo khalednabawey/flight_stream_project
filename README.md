@@ -19,21 +19,13 @@ A real-time flight tracking system built with Apache Kafka, Python Flask, and Op
    cd flight_stream_project
    ```
 
-2. **Set up environment variables**
-   ```powershell
-   # Copy example environment file
-   copy .env.example .env
-   
-   # Edit .env with your OpenSky credentials (optional)
-   notepad .env
-   ```
 
-3. **Install dependencies**
+2. **Install dependencies**
    ```powershell
    pip install -r requirements.txt
    ```
 
-4. **Start Kafka infrastructure**
+3. **Start Kafka infrastructure**
    ```powershell
    # Start Kafka and Zookeeper containers
    docker-compose up -d
@@ -42,7 +34,7 @@ A real-time flight tracking system built with Apache Kafka, Python Flask, and Op
    Start-Sleep -Seconds 30
    ```
 
-5. **Run the applications**
+4. **Run the applications**
    
    In first terminal:
    ```powershell
@@ -56,7 +48,7 @@ A real-time flight tracking system built with Apache Kafka, Python Flask, and Op
    python producer/producer.py
    ```
 
-6. **Access the application**
+5. **Access the application**
    - Consumer UI: [http://localhost:5001](http://localhost:5001)
    - Producer Monitor: [http://localhost:5002](http://localhost:5002)
 
