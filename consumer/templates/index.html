@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Real-Time Flight Tracker</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      h2 {
+        color: #2c3e50;
+        text-align: center;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #3498db;
+      }
+
+      #flightList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      #flightList li {
+        background: white;
+        margin: 10px 0;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 20px;
+      }
+
+      #flightList li:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .flight-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .label {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        font-weight: 500;
+      }
+
+      .value {
+        color: #2c3e50;
+        font-weight: 400;
+      }
+
+      .stats {
+        text-align: right;
+        color: #3498db;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>✈️ Live Flight Tracker</h2>
+    <ul id="flightList"></ul>
+
+    <script>
+      const socket = io("http://localhost:5001");
+      socket.on("flight_data", function (data) {
+        const el = document.createElement("li");
+        el.innerHTML = `
+                <div class="flight-info">
+                    <span class="label">Flight:</span>
+                    <span class="value">${data.callsign.trim() || "N/A"}</span>
+                </div>
+                <div class="flight-info">
+                    <span class="label">Country:</span>
+                    <span class="value">${data.origin_country}</span>
+                </div>
+                <div class="stats">
+                    <span class="label">Altitude:</span>
+                    <span class="value">${data.altitude.toFixed(1)} m</span>
+                </div>
+                <div class="stats">
+                    <span class="label">Speed:</span>
+                    <span class="value">${data.velocity.toFixed(1)} m/s</span>
+                </div>
+            `;
+
+        const list = document.getElementById("flightList");
+        list.prepend(el);
+
+        // Keep only the last 10 flights
+        if (list.children.length > 10) {
+          list.removeChild(list.lastChild);
+        }
+
+        // Fade in animation
+        el.style.opacity = 0;
+        setTimeout(() => {
+          el.style.transition = "opacity 0.5s";
+          el.style.opacity = 1;
+        }, 10);
+      });
+    </script>
+  </body>
+</html>

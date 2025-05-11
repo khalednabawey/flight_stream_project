@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flight Data Producer Monitor</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .status-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .message-list {
+        height: 600px;
+        overflow-y: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .message {
+        padding: 10px;
+        margin: 10px 0;
+        border-left: 4px solid #3498db;
+        background: #f8f9fa;
+      }
+      .timestamp {
+        color: #7f8c8d;
+        font-size: 0.8em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="status-panel">
+      <h2>✈️ Flight Data Producer Monitor</h2>
+      <p>Status: <span id="status">Running</span></p>
+      <p>Messages Sent: <span id="messageCount">0</span></p>
+    </div>
+    <div class="message-list" id="messages"></div>
+
+    <script>
+      const socket = io("http://localhost:5002");
+      let messageCount = 0;
+
+      socket.on("producer_message", function (data) {
+        messageCount++;
+        document.getElementById("messageCount").textContent = messageCount;
+
+        const messagesDiv = document.getElementById("messages");
+        const messageEl = document.createElement("div");
+        messageEl.className = "message";
+        messageEl.innerHTML = `
+                <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        messagesDiv.insertBefore(messageEl, messagesDiv.firstChild);
+      });
+    </script>
+  </body>
+</html>
